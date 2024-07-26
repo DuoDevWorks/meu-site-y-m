@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            padding: 10px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .home-button {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            padding: 8px 16px;
+            background-color: white;
+            color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .home-button:hover {
+            background-color: #e9ecef;
+        }
+
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid #007bff;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-info h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .messages-container {
+            margin-top: 20px;
+        }
+
+        .messages-container h2 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .message-group {
+            margin-bottom: 20px;
+        }
+
+        .message-group-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .message-group-header .icon-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .message-group-header .icon-container img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .delete-button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .delete-button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Meu Perfil
+        <button class="home-button" onclick="window.location.href='paginalinicio.html'">Página Inicial</button>
+    </header>
+    <div class="profile-container">
+        <div class="profile-header">
+            <img src="img/default-icon.png" alt="Imagem de Perfil" class="profile-image" id="profile-image">
+            <div class="profile-info">
+                <h1 id="username">Nome de Usuário</h1>
+                <input type="file" id="upload-image" style="margin-top: 10px;">
+            </div>
+        </div>
+        <div class="messages-container">
+            <h2>Mensagens</h2>
+            <div id="messages">
+                <!-- Mensagens serão exibidas aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function loadUserProfile() {
+            const username = localStorage.getItem('currentUser');
+            const profileImage = localStorage.getItem(`profileImage_${username}`);
+
+            if (username) {
+                document.getElementById('username').textContent = username;
+                document.getElementById('profile-image').src = profileImage || 'img/default-icon.png';
+                loadMessages(username);
+            } else {
+                alert('Nenhum usuário logado');
+                window.location.href = 'paginalinicio.html';
+            }
+        }
+
+        function loadMessages(currentUser) {
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.innerHTML = '';
+
+            // Agrupar mensagens por remetente
+            const groupedMessages = messages.reduce((acc, msg) => {
+                if (msg.recipient === currentUser) {
+                    if (!acc[msg.sender]) {
+                        acc[msg.sender] = [];
+                    }
+                    acc[msg.sender].push(msg);
+                }
+                return acc;
+            }, {});
+
+            // Criar contêineres para cada grupo de mensagens
+            Object.keys(groupedMessages).forEach(sender => {
+                const groupHeader = document.createElement('div');
+                groupHeader.className = 'message-group-header';
+                groupHeader.innerHTML = `
+                    <div>${sender}</div>
+                    <div class="icon-container">
+                        <img src="img/alarmicon.jfif" alt="Alarme">
+                        <span>${groupedMessages[sender].filter(msg => !msg.read).length}</span>
+                    </div>
+                    <button class="delete-button" onclick="deleteConversation('${sender}')">Delete</button>
+                `;
+                groupHeader.onclick = function() {
+                    startChat(sender);
+                };
+
+                messagesContainer.appendChild(groupHeader);
+            });
+        }
+
+        function startChat(user) {
+            zeroMessageCounter(user);
+            localStorage.setItem('chatPartner', user); // Define o parceiro de chat
+            window.location.href = 'chat.html'; // Redireciona para a página de chat
+        }
+
+        function zeroMessageCounter(user) {
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            const currentUser = localStorage.getItem('currentUser');
+            const updatedMessages = messages.map(msg => {
+                if (msg.sender === user && msg.recipient === currentUser) {
+                    msg.read = true;
+                }
+                return msg;
+            });
+
+            localStorage.setItem('messages', JSON.stringify(updatedMessages));
+        }
+
+        function deleteConversation(user) {
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            const currentUser = localStorage.getItem('currentUser');
+            const updatedMessages = messages.filter(msg => !(msg.sender === user && msg.recipient === currentUser) && !(msg.sender === currentUser && msg.recipient === user));
+            localStorage.setItem('messages', JSON.stringify(updatedMessages));
+            loadMessages(currentUser);  // Recarregar as mensagens para atualizar a lista
+        }
+
+        document.getElementById('upload-image').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const currentUser = localStorage.getItem('currentUser');
+                    document.getElementById('profile-image').src = e.target.result;
+                    localStorage.setItem(`profileImage_${currentUser}`, e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        window.onload = function() {
+            loadUserProfile();
+        };
+    </script>
+</body>
+</html>

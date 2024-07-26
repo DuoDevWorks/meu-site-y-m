@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagens</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .messages-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .message {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .message strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="messages-container">
+        <h1>Mensagens</h1>
+        <!-- Mensagens serão carregadas aqui -->
+        <div id="messages">
+            <!-- Mensagens são exibidas aqui -->
+        </div>
+    </div>
+
+    <script>
+        function loadMessages() {
+            // Simulação de mensagens carregadas
+            const messages = [
+                { sender: 'Usuário 1', text: 'Olá! Como você está?' },
+                { sender: 'Usuário 2', text: 'Boa tarde! Preciso de ajuda com um problema.' }
+            ];
+
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.innerHTML = ''; // Limpa mensagens anteriores
+
+            messages.forEach(msg => {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message';
+                messageElement.innerHTML = `<strong>${msg.sender}:</strong> ${msg.text}`;
+                messagesContainer.appendChild(messageElement);
+            });
+        }
+
+        window.onload = function() {
+            loadMessages();
+        };
+    </script>
+</body>
+</html>

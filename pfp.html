@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            padding: 10px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .home-button {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            padding: 8px 16px;
+            background-color: white;
+            color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .home-button:hover {
+            background-color: #e9ecef;
+        }
+
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid #007bff;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-info h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .delete-account-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .delete-account-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Meu Perfil
+        <button class="home-button" onclick="window.location.href='paginalinicio.html'">Página Inicial</button>
+    </header>
+    <div class="profile-container">
+        <div class="profile-header">
+            <img src="img/default-icon.png" alt="Imagem de Perfil" class="profile-image" id="profile-image">
+            <div class="profile-info">
+                <h1 id="username">Nome de Usuário</h1>
+                <input type="file" id="upload-image" style="margin-top: 10px;">
+            </div>
+        </div>
+        <button class="delete-account-button" onclick="confirmDeleteAccount()">Excluir Conta</button>
+    </div>
+
+    <script>
+        function loadUserProfile() {
+            const username = localStorage.getItem('currentUser');
+            const profileImage = localStorage.getItem(`profileImage_${username}`);
+
+            if (username) {
+                document.getElementById('username').textContent = username;
+                // Se não houver imagem de perfil, use a imagem padrão
+                document.getElementById('profile-image').src = profileImage || 'img/iconepadrao.jpeg';
+            } else {
+                alert('Nenhum usuário logado');
+                window.location.href = 'paginalinicio.html';
+            }
+        }
+
+        document.getElementById('upload-image').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const currentUser = localStorage.getItem('currentUser');
+                    document.getElementById('profile-image').src = e.target.result;
+                    localStorage.setItem(`profileImage_${currentUser}`, e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function confirmDeleteAccount() {
+            const confirmation = confirm("Você realmente deseja excluir sua conta? Esta ação não pode ser desfeita.");
+            if (confirmation) {
+                deleteAccount();
+            }
+        }
+
+        function deleteAccount() {
+            const username = localStorage.getItem('currentUser');
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Remove o usuário da lista
+            users = users.filter(user => user.username !== username);
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Remove os dados do perfil
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem(`profileImage_${username}`);
+
+            alert("Conta excluída com sucesso.");
+            window.location.href = 'paginalinicio.html';
+        }
+
+        window.onload = function() {
+            loadUserProfile();
+        };
+    </script>
+</body>
+</html>

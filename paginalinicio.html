@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            background-color: #007bff;
+            color: white;
+            width: 100%;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 1.5em;
+            position: relative;
+        }
+
+        .profile-icon {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid white;
+            background: url('img/default-icon.png') no-repeat center center;
+            background-size: cover;
+        }
+
+        .profile-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .profile-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 10px 0;
+            width: 300px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .profile-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .profile-card h3 {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+
+        .profile-card p {
+            color: #666;
+        }
+
+        .profile-card a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .profile-card a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Perfil de Usuários
+        <div class="profile-icon" onclick="window.location.href='perfil.html'"></div>
+    </header>
+    <div class="profile-container" id="profile-container">
+        <!-- Perfis de usuários serão inseridos aqui -->
+    </div>
+    <script>
+        function loadProfiles() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const profileContainer = document.getElementById('profile-container');
+            const currentUser = localStorage.getItem('currentUser');
+
+            // Usar um Set para garantir que cada usuário seja exibido apenas uma vez
+            const displayedUsers = new Set();
+
+            users.forEach(user => {
+                if (!displayedUsers.has(user.username)) {
+                    displayedUsers.add(user.username);
+
+                    const profileCard = document.createElement('div');
+                    profileCard.className = 'profile-card';
+
+                    // Carregar a imagem específica do usuário
+                    const userImage = localStorage.getItem(`profileImage_${user.username}`) || 'img/default-icon.png';
+
+                    profileCard.innerHTML = `
+                        <img src="${userImage}" alt="Foto de Perfil">
+                        <h3>${user.username}</h3>
+                        <p>${user.email}</p>
+                        <a href="perfil.html?user=${encodeURIComponent(user.username)}">Ver Perfil</a>
+                        <a href="#" onclick="startChat('${encodeURIComponent(user.username)}')">Iniciar Chat</a>
+                    `;
+
+                    profileContainer.appendChild(profileCard);
+                }
+            });
+        }
+
+        function startChat(user) {
+            localStorage.setItem('chatPartner', user);
+            window.location.href = 'chat.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', loadProfiles);
+    </script>
+</body>
+</html>

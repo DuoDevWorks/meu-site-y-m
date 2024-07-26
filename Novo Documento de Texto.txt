@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid #007bff;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-info h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .messages-container {
+            margin-top: 20px;
+        }
+
+        .messages-container h2 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .message {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .message strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-header">
+            <img src="default-profile.jpg" alt="Imagem de Perfil" class="profile-image" id="profile-image">
+            <div class="profile-info">
+                <h1 id="username">Nome de Usuário</h1>
+                <input type="file" id="upload-image" style="margin-top: 10px;">
+            </div>
+        </div>
+        <div class="messages-container">
+            <h2>Mensagens</h2>
+            <!-- Mensagens são exibidas aqui -->
+            <div id="messages">
+                <!-- Exemplo de mensagem -->
+                <div class="message">
+                    <strong>Usuário 1:</strong>
+                    Olá! Como você está?
+                </div>
+                <div class="message">
+                    <strong>Usuário 2:</strong>
+                    Boa tarde! Preciso de ajuda com um problema.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Função para carregar o nome do usuário e a imagem do perfil
+        function loadUserProfile() {
+            const username = localStorage.getItem('currentUser');
+            if (username) {
+                document.getElementById('username').textContent = username;
+            } else {
+                alert('Nenhum usuário logado.');
+                window.location.href = 'login.html'; // Redireciona para a página de login se não houver usuário logado
+            }
+        }
+
+        // Função para trocar a imagem de perfil
+        document.getElementById('upload-image').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-image').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Função para simular carregar mensagens de outros usuários
+        function loadMessages() {
+            // Simulação de mensagens carregadas
+            const messages = [
+                { sender: 'Usuário 1', text: 'Olá! Como você está?' },
+                { sender: 'Usuário 2', text: 'Boa tarde! Preciso de ajuda com um problema.' }
+            ];
+
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.innerHTML = ''; // Limpa mensagens anteriores
+
+            messages.forEach(msg => {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message';
+                messageElement.innerHTML = `<strong>${msg.sender}:</strong> ${msg.text}`;
+                messagesContainer.appendChild(messageElement);
+            });
+        }
+
+        // Carrega o perfil e as mensagens quando a página é carregada
+        window.onload = function() {
+            loadUserProfile();
+            loadMessages();
+        };
+    </script>
+</body>
+</html>

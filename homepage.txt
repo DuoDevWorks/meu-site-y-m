@@ -1,0 +1,436 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial</title>
+    <style>
+        /* Estilos gerais */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: black;
+            color: white;
+            padding: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            max-height: 50px;
+            margin-left: 20px;
+        }
+
+        nav {
+            margin-right: 20px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .profile-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 2px solid #007bff;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-info h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .messages-container {
+            margin-top: 20px;
+        }
+
+        .messages-container h2 {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .message-group {
+            margin-bottom: 20px;
+        }
+
+        .message-group-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .message-group-header .icon-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .message-group-header .icon-container img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .delete-button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .delete-button:hover {
+            opacity: 0.8;
+        }
+
+        .profile-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 10px 0;
+            width: 300px;
+            text-align: center;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 20px;
+        }
+
+        .profile-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .profile-card h3 {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+
+        .profile-card p {
+            color: #666;
+        }
+
+        .profile-card a {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .profile-card a:hover {
+            background-color: #0056b3;
+        }
+
+        /* Estilos específicos da página de perfil */
+        .home-button {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            padding: 8px 16px;
+            background-color: white;
+            color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .home-button:hover {
+            background-color: #e9ecef;
+        }
+
+        .delete-account-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .delete-account-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="img/logo.jpeg" alt="Logo">
+        </div>
+        <nav>
+            <ul>
+                <li><a onclick="showSection('conversas')">Conversas</a></li>
+                <li><a onclick="showSection('usuarios')">Usuários</a></li>
+                <li><a onclick="showSection('perfil')">Perfil</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div id="conversas" class="section">
+            <div class="messages-container">
+                <h2>Conversas</h2>
+                <div id="messages">
+                    <!-- Mensagens serão exibidas aqui -->
+                </div>
+            </div>
+        </div>
+        <div id="usuarios" class="section">
+            <h2>Usuários</h2>
+            <div class="profile-container" id="profile-container">
+                <!-- Perfis de usuários serão inseridos aqui -->
+            </div>
+        </div>
+        <div id="perfil" class="section active">
+            <header>
+                Meu Perfil
+                <button class="home-button" onclick="showSection('conversas')">Página Inicial</button>
+            </header>
+            <div class="profile-container">
+                <div class="profile-header">
+                    <img src="img/default-icon.png" alt="Imagem de Perfil" class="profile-image" id="profile-image">
+                    <div class="profile-info">
+                        <h1 id="username">Nome de Usuário</h1>
+                        <input type="file" id="upload-image" style="margin-top: 10px;">
+                    </div>
+                </div>
+                <button class="delete-account-button" onclick="confirmDeleteAccount()">Excluir Conta</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            const activeSection = document.getElementById(sectionId);
+            activeSection.classList.add('active');
+        }
+
+        function loadUserProfile() {
+            const username = localStorage.getItem('currentUser');
+            const profileImage = localStorage.getItem(`profileImage_${username}`);
+
+            if (username) {
+                document.getElementById('username').textContent = username;
+                document.getElementById('profile-image').src = profileImage || 'img/default-icon.png';
+                loadMessages(username);
+            } else {
+                alert('Nenhum usuário logado');
+                showSection('conversas'); // Volta para a seção de conversas se não houver usuário logado
+            }
+        }
+
+        function loadMessages(currentUser) {
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            const messagesContainer = document.getElementById('messages');
+            messagesContainer.innerHTML = '';
+
+            // Agrupar mensagens por remetente
+            const groupedMessages = messages.reduce((acc, msg) => {
+                if (msg.recipient === currentUser) {
+                    if (!acc[msg.sender]) {
+                        acc[msg.sender] = [];
+                    }
+                    acc[msg.sender].push(msg);
+                }
+                return acc;
+            }, {});
+
+            // Criar contêineres para cada grupo de mensagens
+            Object.keys(groupedMessages).forEach(sender => {
+                const groupHeader = document.createElement('div');
+                groupHeader.className = 'message-group-header';
+                groupHeader.innerHTML = `
+                    <div>${sender}</div>
+                    <div class="icon-container">
+                        <img src="img/alarmicon.jfif" alt="Alarme">
+                        <span>${groupedMessages[sender].filter(msg => !msg.read).length}</span>
+                    </div>
+                    <button class="delete-button" onclick="deleteConversation('${sender}')">Delete</button>
+                `;
+                groupHeader.onclick = function() {
+                    startChat(sender);
+                };
+
+                messagesContainer.appendChild(groupHeader);
+            });
+        }
+
+        function startChat(user) {
+            zeroMessageCounter(user);
+            localStorage.setItem('chatPartner', user); // Define o parceiro de chat
+            window.location.href = `chat.html?user=${encodeURIComponent(user)}`; // Redireciona para a página de chat
+        }
+
+        function zeroMessageCounter(user) {
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            const currentUser = localStorage.getItem('currentUser');
+            const updatedMessages = messages.map(msg => {
+                if (msg.sender === user && msg.recipient === currentUser) {
+                    msg.read = true;
+                }
+                return msg;
+            });
+
+            localStorage.setItem('messages', JSON.stringify(updatedMessages));
+        }
+
+        function deleteConversation(user) {
+            const messages = JSON.parse(localStorage.getItem('messages')) || [];
+            const currentUser = localStorage.getItem('currentUser');
+            const updatedMessages = messages.filter(msg => !(msg.sender === user && msg.recipient === currentUser) && !(msg.sender === currentUser && msg.recipient === user));
+
+            localStorage.setItem('messages', JSON.stringify(updatedMessages));
+            loadMessages(currentUser);
+        }
+
+        function loadProfiles() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const profileContainer = document.getElementById('profile-container');
+            const currentUser = localStorage.getItem('currentUser');
+
+            // Usar um Set para garantir que cada usuário seja exibido apenas uma vez
+            const displayedUsers = new Set();
+
+            users.forEach(user => {
+                if (!displayedUsers.has(user.username)) {
+                    displayedUsers.add(user.username);
+
+                    const profileCard = document.createElement('div');
+                    profileCard.className = 'profile-card';
+
+                    // Carregar a imagem específica do usuário
+                    const userImage = localStorage.getItem(`profileImage_${user.username}`) || 'img/default-icon.png';
+
+                    profileCard.innerHTML = `
+                        <img src="${userImage}" alt="Foto de Perfil">
+                        <h3>${user.username}</h3>
+                        <p>${user.email}</p>
+                        <a href="perfil.html?user=${encodeURIComponent(user.username)}">Ver Perfil</a>
+                        <a href="#" onclick="startChat('${encodeURIComponent(user.username)}')">Iniciar Chat</a>
+                    `;
+
+                    profileContainer.appendChild(profileCard);
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserProfile();
+            showSection('conversas');
+            loadProfiles(); // Carregar perfis de usuários ao inicializar a página
+        });
+
+        document.getElementById('upload-image').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const currentUser = localStorage.getItem('currentUser');
+                    document.getElementById('profile-image').src = e.target.result;
+                    localStorage.setItem(`profileImage_${currentUser}`, e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function confirmDeleteAccount() {
+            const confirmation = confirm("Você realmente deseja excluir sua conta? Esta ação não pode ser desfeita.");
+            if (confirmation) {
+                deleteAccount();
+            }
+        }
+
+        function deleteAccount() {
+            const username = localStorage.getItem('currentUser');
+            let users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Remove o usuário da lista
+            users = users.filter(user => user.username !== username);
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Remove os dados do perfil
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem(`profileImage_${username}`);
+
+            alert("Conta excluída com sucesso.");
+            window.location.href = 'paginalinicio.html';
+        }
+    </script>
+</body>
+</html>
